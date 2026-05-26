@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, Hazard, InsertHazard, hazards } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,136 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+/**
+ * Get all hazards with optional filtering and pagination.
+ * Supports filtering by type (pothole/rough) and severity (1-3).
+ * Multiple filters are combined with AND logic.
+ */
+export async function getHazards({
+  type,
+  severity,
+  limit = 100,
+  offset = 0,
+}: {
+  type?: string;
+  severity?: number;
+  limit?: number;
+  offset?: number;
+} = {}) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get hazards: database not available");
+    return [];
+  }
+
+  try {
+    // Build filter conditions as an array
+    const conditions: any[] = [];
+    if (type) {
+      conditions.push(eq(hazards.type, type as "pothole" | "rough"));
+    }
+    if (severity !== undefined) {
+      conditions.push(eq(hazards.severity, severity));
+    }
+
+    // Build query with all conditions combined via AND
+    let query: any = db.select().from(hazards);
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+
+    const result = await query
+      .orderBy(desc(hazards.timestamp))
+      .limit(limit)
+      .offset(offset);
+
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get hazards:", error);
+    return [];
+  }
+}
+
+/**
+ * Create a new hazard report.
+ */
+export async function createHazard(hazard: InsertHazard): Promise<Hazard | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create hazard: database not available");
+    return null;
+  }
+
+  try {
+    await db.insert(hazards).values(hazard);
+
+    // Fetch the most recently created hazard by createdAt timestamp
+    const created = await db
+      .select()
+      .from(hazards)
+      .orderBy(desc(hazards.createdAt))
+      .limit(1);
+
+    return created[0] || null;
+  } catch (error) {
+    console.error("[Database] Failed to create hazard:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get hazard statistics (totals by severity and type).
+ */
+export async function getHazardStats() {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get hazard stats: database not available");
+    return { total: 0, bySeverity: { 1: 0, 2: 0, 3: 0 }, byType: { pothole: 0, rough: 0 } };
+  }
+
+  try {
+    const all = await db.select().from(hazards);
+
+    const stats = {
+      total: all.length,
+      bySeverity: {
+        1: all.filter((h) => h.severity === 1).length,
+        2: all.filter((h) => h.severity === 2).length,
+        3: all.filter((h) => h.severity === 3).length,
+      },
+      byType: {
+        pothole: all.filter((h) => h.type === "pothole").length,
+        rough: all.filter((h) => h.type === "rough").length,
+      },
+    };
+
+    return stats;
+  } catch (error) {
+    console.error("[Database] Failed to get hazard stats:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get recent hazards (last N reports).
+ */
+export async function getRecentHazards(limit: number = 10) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get recent hazards: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db
+      .select()
+      .from(hazards)
+      .orderBy(desc(hazards.timestamp))
+      .limit(limit);
+
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get recent hazards:", error);
+    throw error;
+  }
+}

@@ -25,4 +25,20 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Hazard reports from Pico WH sensor devices.
+ * Stores road hazard detections with location, severity, and type.
+ */
+export const hazards = mysqlTable("hazards", {
+  id: int("id").autoincrement().primaryKey(),
+  latitude: varchar("latitude", { length: 32 }).notNull(),
+  longitude: varchar("longitude", { length: 32 }).notNull(),
+  severity: int("severity").notNull(), // 1 = mild, 2 = moderate, 3 = dangerous
+  type: mysqlEnum("type", ["pothole", "rough"]).notNull(),
+  timestamp: timestamp("timestamp").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Hazard = typeof hazards.$inferSelect;
+export type InsertHazard = typeof hazards.$inferInsert;

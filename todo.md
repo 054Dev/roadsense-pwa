@@ -1,9 +1,9 @@
 # RoadSense PWA - Project TODO
 
 ## Phase 1: Core Architecture & Schema
-- [ ] Design database schema for hazards (id, lat, lng, severity, type, timestamp, createdAt)
-- [ ] Design API contract for POST /api/hazards endpoint
-- [ ] Design API contract for GET /api/hazards with filtering/pagination
+- [x] Design database schema for hazards (id, lat, lng, severity, type, timestamp, createdAt)
+- [x] Design API contract for POST /api/hazards endpoint
+- [x] Design API contract for GET /api/hazards with filtering/pagination
 
 ## Phase 2: Backend API
 - [x] Create hazard table in Drizzle schema

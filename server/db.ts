@@ -1,6 +1,6 @@
 import { eq, desc, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, Hazard, InsertHazard, hazards } from "../drizzle/schema";
+import { InsertUser, users, Hazard, InsertHazard, hazards, HazardValidation, InsertHazardValidation, hazardValidations, Notification, InsertNotification, notifications } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -219,6 +219,197 @@ export async function getRecentHazards(limit: number = 10) {
     return result;
   } catch (error) {
     console.error("[Database] Failed to get recent hazards:", error);
+    throw error;
+  }
+}
+
+/**
+ * Create a hazard validation (confirmation or fixed report).
+ */
+export async function createValidation(validation: InsertHazardValidation): Promise<HazardValidation | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create validation: database not available");
+    return null;
+  }
+
+  try {
+    await db.insert(hazardValidations).values(validation);
+    const created = await db
+      .select()
+      .from(hazardValidations)
+      .orderBy(desc(hazardValidations.timestamp))
+      .limit(1);
+    return created[0] || null;
+  } catch (error) {
+    console.error("[Database] Failed to create validation:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get validation metrics for a hazard (confirmations and fixed counts).
+ */
+export async function getHazardMetrics(hazardId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get hazard metrics: database not available");
+    return { confirmed: 0, fixed: 0 };
+  }
+
+  try {
+    const validations = await db
+      .select()
+      .from(hazardValidations)
+      .where(eq(hazardValidations.hazardId, hazardId));
+
+    return {
+      confirmed: validations.filter((v) => v.validationType === "confirmed").length,
+      fixed: validations.filter((v) => v.validationType === "fixed").length,
+    };
+  } catch (error) {
+    console.error("[Database] Failed to get hazard metrics:", error);
+    throw error;
+  }
+}
+
+/**
+ * Create a notification for real-time alerts.
+ */
+export async function createNotification(notification: InsertNotification): Promise<Notification | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create notification: database not available");
+    return null;
+  }
+
+  try {
+    await db.insert(notifications).values(notification);
+    const created = await db
+      .select()
+      .from(notifications)
+      .orderBy(desc(notifications.timestamp))
+      .limit(1);
+    return created[0] || null;
+  } catch (error) {
+    console.error("[Database] Failed to create notification:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get unread notifications for a user.
+ */
+export async function getUnreadNotifications(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get notifications: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db
+      .select()
+      .from(notifications)
+      .where(and(eq(notifications.userId, userId), eq(notifications.readStatus, 0)))
+      .orderBy(desc(notifications.timestamp));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get notifications:", error);
+    throw error;
+  }
+}
+
+/**
+ * Mark notification as read.
+ */
+export async function markNotificationAsRead(notificationId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot mark notification as read: database not available");
+    return false;
+  }
+
+  try {
+    await db
+      .update(notifications)
+      .set({ readStatus: 1 })
+      .where(eq(notifications.id, notificationId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to mark notification as read:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get hazards within a date range and optional location bounds for data export.
+ */
+export async function getHazardsForExport({
+  startDate,
+  endDate,
+  severity,
+  type,
+  minLat,
+  maxLat,
+  minLng,
+  maxLng,
+}: {
+  startDate?: Date;
+  endDate?: Date;
+  severity?: number;
+  type?: string;
+  minLat?: number;
+  maxLat?: number;
+  minLng?: number;
+  maxLng?: number;
+} = {}) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get hazards for export: database not available");
+    return [];
+  }
+
+  try {
+    const conditions: any[] = [];
+
+    // Note: Date filtering is applied after query for simplicity
+    // Drizzle ORM date comparisons require gte/lte from drizzle-orm
+    if (severity !== undefined) {
+      conditions.push(eq(hazards.severity, severity));
+    }
+    if (type) {
+      conditions.push(eq(hazards.type, type as "pothole" | "rough"));
+    }
+
+    let query: any = db.select().from(hazards);
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+
+    const result = await query.orderBy(desc(hazards.timestamp));
+
+    // Apply date filtering if provided
+    let filtered = result;
+    if (startDate) {
+      filtered = filtered.filter((h: any) => new Date(h.timestamp) >= startDate);
+    }
+    if (endDate) {
+      filtered = filtered.filter((h: any) => new Date(h.timestamp) <= endDate);
+    }
+
+    // Filter by location bounds if provided
+    if (minLat !== undefined && maxLat !== undefined && minLng !== undefined && maxLng !== undefined) {
+      return filtered.filter((h: any) => {
+        const lat = parseFloat(h.latitude);
+        const lng = parseFloat(h.longitude);
+        return lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng;
+      });
+    }
+
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get hazards for export:", error);
     throw error;
   }
 }

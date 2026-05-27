@@ -7,6 +7,9 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Firmware from "./pages/Firmware";
+import AlertsDashboard from "./pages/AlertsDashboard";
+import ValidationHub from "./pages/ValidationHub";
+import DataExport from "./pages/DataExport";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -15,6 +18,9 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/firmware"} component={Firmware} />
+      <Route path={"/alerts"} component={AlertsDashboard} />
+      <Route path={"/validate"} component={ValidationHub} />
+      <Route path={"/export"} component={DataExport} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

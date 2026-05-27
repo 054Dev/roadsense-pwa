@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "wouter";
-import { MapPin, Zap, Code, AlertCircle } from "lucide-react";
+import { MapPin, Code, Bell, Users, Download } from "lucide-react";
 
 export default function Home() {
   return (
@@ -24,7 +24,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="container py-12">
         {/* Feature Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {/* Dashboard Card */}
           <Card className="bg-card border-2 border-accent p-6 hover:border-primary transition-colors bracket-top">
             <div className="flex items-start gap-4 mb-4">
@@ -66,6 +66,72 @@ export default function Home() {
             </div>
             <Link href="/firmware">
               <Button className="w-full">VIEW DOCUMENTATION</Button>
+            </Link>
+          </Card>
+
+          {/* Alerts Card */}
+          <Card className="bg-card border-2 border-accent p-6 hover:border-primary transition-colors bracket-top">
+            <div className="flex items-start gap-4 mb-4">
+              <Bell className="w-8 h-8 flex-shrink-0" style={{ color: "#ff00ff" }} />
+              <div>
+                <h2 className="text-2xl font-bold mb-2">REAL-TIME ALERTS</h2>
+                <p className="text-sm text-muted-foreground">
+                  Live hazard notification stream with sound alerts and map animations.
+                </p>
+              </div>
+            </div>
+            <div className="space-y-2 mb-4 text-xs error-code">
+              <p>• Live hazard stream</p>
+              <p>• Sound alert system</p>
+              <p>• Severity breakdown</p>
+              <p>• Auto-scroll feed</p>
+            </div>
+            <Link href="/alerts">
+              <Button className="w-full">VIEW ALERTS</Button>
+            </Link>
+          </Card>
+
+          {/* Validation Card */}
+          <Card className="bg-card border-2 border-accent p-6 hover:border-primary transition-colors bracket-top">
+            <div className="flex items-start gap-4 mb-4">
+              <Users className="w-8 h-8 flex-shrink-0" style={{ color: "#00ffff" }} />
+              <div>
+                <h2 className="text-2xl font-bold mb-2">COMMUNITY VALIDATION</h2>
+                <p className="text-sm text-muted-foreground">
+                  Confirm hazards or report fixes to build community trust and accuracy metrics.
+                </p>
+              </div>
+            </div>
+            <div className="space-y-2 mb-4 text-xs error-code">
+              <p>• Confirm hazards</p>
+              <p>• Report fixes</p>
+              <p>• Accuracy metrics</p>
+              <p>• User reputation</p>
+            </div>
+            <Link href="/validate">
+              <Button className="w-full">VALIDATE HAZARDS</Button>
+            </Link>
+          </Card>
+
+          {/* Export Card */}
+          <Card className="bg-card border-2 border-accent p-6 hover:border-primary transition-colors bracket-top">
+            <div className="flex items-start gap-4 mb-4">
+              <Download className="w-8 h-8 flex-shrink-0" style={{ color: "#00ff00" }} />
+              <div>
+                <h2 className="text-2xl font-bold mb-2">DATA EXPORT</h2>
+                <p className="text-sm text-muted-foreground">
+                  Download hazard reports in CSV or PDF format for analysis and planning.
+                </p>
+              </div>
+            </div>
+            <div className="space-y-2 mb-4 text-xs error-code">
+              <p>• CSV export</p>
+              <p>• PDF reports</p>
+              <p>• Date filtering</p>
+              <p>• Location bounds</p>
+            </div>
+            <Link href="/export">
+              <Button className="w-full">EXPORT DATA</Button>
             </Link>
           </Card>
         </div>
@@ -153,10 +219,10 @@ export default function Home() {
       <div className="border-t border-border bg-black mt-12 p-6">
         <div className="container text-center">
           <p className="text-xs error-code">
-            [FOOTER] RoadSense v1.0 | Distributed Road Hazard Intelligence System
+            [FOOTER] RoadSense v2.0 | Distributed Road Hazard Intelligence System
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-            Built for real-world impact in infrastructure monitoring
+            Built for real-world impact in infrastructure monitoring | Real-time alerts | Community validation | Data export
           </p>
         </div>
       </div>

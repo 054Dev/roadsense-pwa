@@ -66,3 +66,29 @@
 - [x] Document database schema
 - [x] Create deployment guide
 - [x] Save final checkpoint
+
+
+## Phase 10: Advanced Features - Real-Time Alerts & Notifications
+- [x] Update database schema with hazard_validations table (hazard_id, user_id, validation_type, timestamp)
+- [x] Add notification tracking table (id, hazard_id, user_id, read_status, timestamp)
+- [x] Create tRPC procedures for validation (confirm/fixed)
+- [x] Implement real-time notification system with WebSocket
+- [x] Build alerts dashboard with live hazard stream (AlertsDashboard component)
+- [x] Add map animation for new hazard arrivals (fade-in animations)
+- [x] Implement sound alert system (Web Audio API)
+
+## Phase 11: User Contribution System
+- [x] Add validation UI to hazard list (Confirm/Fixed buttons in ValidationHub)
+- [x] Display validation count and accuracy metrics per hazard
+- [x] Track user contribution statistics
+- [x] Add user reputation system based on validation accuracy
+- [x] Create validation history view (user validations array)
+- [x] Implement metrics display on map markers (confirmed/fixed counts)
+
+## Phase 12: Data Export Functionality
+- [x] Build CSV export with filtering (date range, severity, type, location)
+- [x] Build PDF export with charts and summary statistics
+- [x] Add export button to dashboard (DataExport page)
+- [x] Implement date range picker for exports
+- [x] Add location-based filtering for exports (minLat, maxLat, minLng, maxLng)
+- [x] Create export history/download tracking (recent exports display)

@@ -42,3 +42,35 @@ export const hazards = mysqlTable("hazards", {
 
 export type Hazard = typeof hazards.$inferSelect;
 export type InsertHazard = typeof hazards.$inferInsert;
+
+/**
+ * User validations for hazard reports.
+ * Tracks confirmations and "fixed" reports to build accuracy metrics.
+ */
+export const hazardValidations = mysqlTable("hazardValidations", {
+  id: int("id").autoincrement().primaryKey(),
+  hazardId: int("hazardId").notNull(),
+  userId: int("userId").notNull(),
+  validationType: mysqlEnum("validationType", ["confirmed", "fixed"]).notNull(),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+export type HazardValidation = typeof hazardValidations.$inferSelect;
+export type InsertHazardValidation = typeof hazardValidations.$inferInsert;
+
+/**
+ * Notification tracking for real-time alerts.
+ * Tracks which users have been notified about hazards.
+ */
+export const notifications = mysqlTable("notifications", {
+  id: int("id").autoincrement().primaryKey(),
+  hazardId: int("hazardId").notNull(),
+  userId: int("userId"),
+  title: varchar("title", { length: 255 }).notNull(),
+  message: text("message"),
+  readStatus: int("readStatus").default(0).notNull(),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+export type Notification = typeof notifications.$inferSelect;
+export type InsertNotification = typeof notifications.$inferInsert;

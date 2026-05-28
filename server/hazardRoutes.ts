@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { z } from "zod";
 import { createHazard, getHazards, getHazardStats, getRecentHazards } from "./db";
+import { sseManager } from "./sseManager";
 
 const router = Router();
 
@@ -98,6 +99,9 @@ router.post("/hazards", async (req: Request, res: Response) => {
         error: "Failed to create hazard record",
       });
     }
+
+    // Broadcast hazard to all connected SSE clients
+    sseManager.broadcastHazard(hazard);
 
     return res.status(201).json({
       success: true,

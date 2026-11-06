@@ -5,6 +5,15 @@ import { sseManager } from "./sseManager";
 
 const router = Router();
 
+const hazardPayloadSchema = z.object({
+  latitude: z.union([z.string(), z.number()]),
+  longitude: z.union([z.string(), z.number()]),
+  severity: z.number().int().min(1).max(3).optional(),
+  accelerationMagnitude: z.number().finite().nonnegative().optional(),
+  type: z.enum(["pothole", "rough"]),
+  timestamp: z.union([z.string(), z.number()]).optional(),
+});
+
 /**
  * Classify hazard severity based on acceleration data from sensor.
  * This function transforms raw sensor data into a severity level (1-3).
@@ -46,28 +55,29 @@ function classifySeverity(accelerationMagnitude: number): number {
  */
 router.post("/hazards", async (req: Request, res: Response) => {
   try {
-    const payload = req.body;
-
-    // Validate required fields
-    if (!payload.latitude || !payload.longitude) {
-      return res.status(400).json({
-        error: "Missing required fields: latitude, longitude",
-      });
+    const parsed = hazardPayloadSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Hazard report is missing valid location, type, or severity data" });
     }
+    const payload = parsed.data;
 
-    if (!payload.type || !["pothole", "rough"].includes(payload.type)) {
+    const latitude = Number(payload.latitude);
+    const longitude = Number(payload.longitude);
+    if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90 ||
+        !Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
       return res.status(400).json({
-        error: "Invalid hazard type. Must be 'pothole' or 'rough'",
+        error: "Location must contain valid latitude and longitude coordinates",
       });
     }
 
     // Determine severity: either from provided severity or classify from accelerationMagnitude
     let severity = payload.severity;
-    if (!severity && payload.accelerationMagnitude !== undefined) {
+    if (severity === undefined && payload.accelerationMagnitude !== undefined) {
       severity = classifySeverity(payload.accelerationMagnitude);
-    } else if (!severity) {
-      // Default to moderate if neither provided
-      severity = 2;
+    } else if (severity === undefined) {
+      return res.status(400).json({
+        error: "Missing severity or accelerationMagnitude",
+      });
     }
 
     // Validate severity
@@ -87,8 +97,8 @@ router.post("/hazards", async (req: Request, res: Response) => {
 
     // Create hazard record
     const hazard = await createHazard({
-      latitude: String(payload.latitude),
-      longitude: String(payload.longitude),
+      latitude: String(latitude),
+      longitude: String(longitude),
       severity,
       type: payload.type as "pothole" | "rough",
       timestamp,

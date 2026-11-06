@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Download, FileText, BarChart3 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { resolveApiUrl } from "@/lib/apiUrl";
 
 export default function DataExport() {
   const [startDate, setStartDate] = useState("");
@@ -18,7 +19,7 @@ export default function DataExport() {
     try {
       setExporting(true);
       // Use fetch directly for query operations
-      const response = await fetch("/api/trpc/hazards.exportCSV", {
+      const response = await fetch(resolveApiUrl("/api/trpc/hazards.exportCSV"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -56,7 +57,7 @@ export default function DataExport() {
     try {
       setExporting(true);
       // Use fetch directly for query operations
-      const response = await fetch("/api/trpc/hazards.exportCSV", {
+      const response = await fetch(resolveApiUrl("/api/trpc/hazards.exportCSV"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

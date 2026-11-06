@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bell, Volume2, VolumeX, Wifi, WifiOff } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { resolveApiUrl } from "@/lib/apiUrl";
 
 interface Alert {
   id: number;
@@ -37,7 +38,7 @@ export default function AlertsDashboard() {
       const initialAlerts = (initialHazards as any).map((h: any, idx: number) => ({
         id: h.id + idx * 1000,
         hazardId: h.id,
-        title: `${h.type === "pothole" ? "🕳️ Pothole" : "〰️ Rough Road"} Detected`,
+        title: `${h.type === "pothole" ? "Pothole" : "Rough road"} reported`,
         message: `Severity Level ${h.severity} - ${h.latitude}, ${h.longitude}`,
         severity: h.severity,
         type: h.type,
@@ -51,7 +52,7 @@ export default function AlertsDashboard() {
     // Connect to SSE stream
     const connectSSE = () => {
       try {
-        const eventSource = new EventSource("/api/hazards/stream");
+        const eventSource = new EventSource(resolveApiUrl("/api/hazards/stream"));
 
         eventSource.addEventListener("connected", (event) => {
           const data = JSON.parse(event.data);
@@ -77,7 +78,7 @@ export default function AlertsDashboard() {
           const newAlert: Alert = {
             id: Date.now(),
             hazardId: hazard.id,
-            title: `${hazard.type === "pothole" ? "🕳️ Pothole" : "〰️ Rough Road"} Detected`,
+            title: `${hazard.type === "pothole" ? "Pothole" : "Rough road"} reported`,
             message: `Severity Level ${hazard.severity} - ${hazard.latitude}, ${hazard.longitude}`,
             severity: hazard.severity,
             type: hazard.type,

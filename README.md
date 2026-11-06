@@ -1,5 +1,7 @@
 # Web App Template (tRPC + Manus Auth + Database)
 
+RoadSense is delivered for Android through a native Capacitor application. See [ANDROID_APP.md](ANDROID_APP.md) for APK build, installation, server setup, and device testing instructions.
+
 This template gives you a React 19 + Tailwind 4 + Express 4 + tRPC 11 stack with Manus OAuth already wired. Procedures are your contracts, types flow end to end, and authentication "just works".
 
 ---

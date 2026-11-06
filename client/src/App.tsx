@@ -10,6 +10,7 @@ import Firmware from "./pages/Firmware";
 import AlertsDashboard from "./pages/AlertsDashboard";
 import ValidationHub from "./pages/ValidationHub";
 import DataExport from "./pages/DataExport";
+import Settings from "./pages/Settings";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -21,6 +22,7 @@ function Router() {
       <Route path={"/alerts"} component={AlertsDashboard} />
       <Route path={"/validate"} component={ValidationHub} />
       <Route path={"/export"} component={DataExport} />
+      <Route path={"/settings"} component={Settings} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

@@ -38,8 +38,8 @@ API_URL = "https://your-domain.com/api/hazards"
 
 # Sensor configuration
 ACCEL_SAMPLE_RATE = 100  # Hz
-POTHOLE_THRESHOLD = 2.5  # g (acceleration magnitude)
-ROUGH_ROAD_THRESHOLD = 1.2  # g (sustained vibration)
+POTHOLE_THRESHOLD = 2.5  # g (change from stationary 1 g magnitude)
+ROUGH_ROAD_THRESHOLD = 1.2  # g (sustained vibration variation)
 REPORT_INTERVAL = 5  # seconds between reports
 
 # Severity thresholds
@@ -229,7 +229,8 @@ def send_hazard_report(latitude, longitude, severity, hazard_type):
             "longitude": str(longitude),
             "severity": severity,
             "type": hazard_type,
-            "timestamp": time.time()
+            # The server records receipt time. MicroPython time.time() is not
+            # guaranteed to be Unix UTC, so sending it can create false dates.
         }
         
         headers = {"Content-Type": "application/json"}
@@ -242,7 +243,7 @@ def send_hazard_report(latitude, longitude, severity, hazard_type):
             timeout=5
         )
         
-        if response.status_code == 200:
+        if response.status_code in (200, 201):
             print(f"[API] Success! Status: {response.status_code}")
             return True
         else:
@@ -347,8 +348,12 @@ def main():
         try:
             # Read accelerometer
             if mpu:
-                accel_mag = mpu.get_accel_magnitude()
-                detector.update(accel_mag)
+                # The MPU6050 reports m/s² and includes gravity. Convert to
+                # excess acceleration in g so the detector thresholds are
+                # meaningful while the vehicle is stationary or moving.
+                acceleration_g = mpu.get_accel_magnitude() / 9.81
+                road_shock_g = abs(acceleration_g - 1.0)
+                detector.update(road_shock_g)
                 reading_count += 1
             
             # Check for hazard
@@ -370,8 +375,10 @@ def main():
                     pos = gps.get_position()
                     latitude, longitude, altitude, satellites = pos
                 else:
-                    # Fallback coordinates (Nairobi, Kenya)
-                    latitude, longitude = 1.2921, 36.8219
+                    # Never report a fabricated location as a detected hazard.
+                    print("[GPS] No valid fix; skipping report until location is available")
+                    time.sleep(0.01)
+                    continue
                 
                 # Send to backend
                 if send_hazard_report(latitude, longitude, severity, hazard_type):

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, CheckCircle2, CircleHelp, Link2, Radio, Server, TriangleAlert } from "lucide-react";
+import { ArrowLeft, CheckCircle2, CircleHelp, Link2, Server, TriangleAlert } from "lucide-react";
 import { toast } from "sonner";
 import { getApiBaseUrl, getVehicleMode, resolveApiUrl, saveApiBaseUrl, setVehicleMode } from "@/lib/apiUrl";
 
@@ -49,10 +49,6 @@ export default function Settings() {
 
   return (
     <main className="settings-shell">
-      <header className="settings-topbar">
-        <Link href="/" className="settings-back"><ArrowLeft size={18} /> Back to overview</Link>
-        <span className="settings-brand"><Radio size={18} /> RoadSense</span>
-      </header>
       <div className="settings-content">
         <p className="settings-eyebrow">APP SETTINGS</p>
         <h1>Connect RoadSense</h1>

@@ -11,6 +11,7 @@ import AlertsDashboard from "./pages/AlertsDashboard";
 import ValidationHub from "./pages/ValidationHub";
 import DataExport from "./pages/DataExport";
 import Settings from "./pages/Settings";
+import RoadSenseShell from "./components/RoadSenseShell";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -38,7 +39,9 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <RoadSenseShell>
+            <Router />
+          </RoadSenseShell>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

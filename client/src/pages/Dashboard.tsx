@@ -64,18 +64,18 @@ function clusterHazards(hazards: Hazard[], gridSize: number = 0.001): HazardClus
  * Get color for severity level.
  */
 function getSeverityColor(severity: number): string {
-  if (severity === 3) return "#ff0000"; // Red - dangerous
-  if (severity === 2) return "#ffff00"; // Yellow - moderate
-  return "#00ff00"; // Green - mild
+  if (severity === 3) return "#ff7777";
+  if (severity === 2) return "#ffb84f";
+  return "#c7f36a";
 }
 
 /**
  * Get label for severity level.
  */
 function getSeverityLabel(severity: number): string {
-  if (severity === 3) return "Dangerous";
+  if (severity === 3) return "High";
   if (severity === 2) return "Moderate";
-  return "Mild";
+  return "Low";
 }
 
 export default function Dashboard() {
@@ -113,10 +113,10 @@ export default function Dashboard() {
       <div className="border-b border-border bg-card p-6">
         <div className="container">
           <h1 className="text-4xl font-bold mb-2">
-            <span className="error-code">ROADSENSE v1.0</span>
+            <span className="error-code">LIVE ROAD CONDITIONS</span>
           </h1>
           <p className="text-sm error-code">
-            [SYSTEM] Road Hazard Detection & Mapping Network Active
+            Browse reported hazards, filter by type and severity, and review recent activity.
           </p>
         </div>
       </div>
@@ -129,12 +129,12 @@ export default function Dashboard() {
           <Card className="bg-card border-border p-4 bracket-top">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs error-code mb-2">TOTAL_HAZARDS</p>
-                <p className="text-3xl font-bold neon-glow" style={{ color: "#00ffff" }}>
+                <p className="text-xs error-code mb-2">REPORTS LOGGED</p>
+                <p className="text-3xl font-bold neon-glow" style={{ color: "#c7f36a" }}>
                   {stats?.total || 0}
                 </p>
               </div>
-              <MapPin className="w-8 h-8" style={{ color: "#00ffff" }} />
+              <MapPin className="w-8 h-8" style={{ color: "#c7f36a" }} />
             </div>
           </Card>
 
@@ -142,12 +142,12 @@ export default function Dashboard() {
           <Card className="bg-card border-border p-4 bracket-top">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs error-code mb-2">DANGEROUS</p>
-                <p className="text-3xl font-bold neon-glow" style={{ color: "#ff0000" }}>
+                <p className="text-xs error-code mb-2">HIGH SEVERITY</p>
+                <p className="text-3xl font-bold neon-glow" style={{ color: "#ff7777" }}>
                   {stats?.bySeverity[3] || 0}
                 </p>
               </div>
-              <AlertCircle className="w-8 h-8" style={{ color: "#ff0000" }} />
+              <AlertCircle className="w-8 h-8" style={{ color: "#ff7777" }} />
             </div>
           </Card>
 
@@ -156,11 +156,11 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs error-code mb-2">MODERATE</p>
-                <p className="text-3xl font-bold neon-glow" style={{ color: "#ffff00" }}>
+                <p className="text-3xl font-bold neon-glow" style={{ color: "#ffb84f" }}>
                   {stats?.bySeverity[2] || 0}
                 </p>
               </div>
-              <TrendingUp className="w-8 h-8" style={{ color: "#ffff00" }} />
+              <TrendingUp className="w-8 h-8" style={{ color: "#ffb84f" }} />
             </div>
           </Card>
 
@@ -168,12 +168,12 @@ export default function Dashboard() {
           <Card className="bg-card border-border p-4 bracket-top">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs error-code mb-2">MILD</p>
-                <p className="text-3xl font-bold neon-glow" style={{ color: "#00ff00" }}>
+                <p className="text-xs error-code mb-2">LOW SEVERITY</p>
+                <p className="text-3xl font-bold neon-glow" style={{ color: "#c7f36a" }}>
                   {stats?.bySeverity[1] || 0}
                 </p>
               </div>
-              <MapPin className="w-8 h-8" style={{ color: "#00ff00" }} />
+              <MapPin className="w-8 h-8" style={{ color: "#c7f36a" }} />
             </div>
           </Card>
         </div>
@@ -181,9 +181,9 @@ export default function Dashboard() {
         {/* Tabs */}
         <Tabs defaultValue="map" className="w-full">
           <TabsList className="bg-card border border-border">
-            <TabsTrigger value="map">MAP VIEW</TabsTrigger>
-            <TabsTrigger value="list">HAZARD LIST</TabsTrigger>
-            <TabsTrigger value="recent">RECENT</TabsTrigger>
+            <TabsTrigger value="map">Map view</TabsTrigger>
+            <TabsTrigger value="list">Hazard list</TabsTrigger>
+            <TabsTrigger value="recent">Recent</TabsTrigger>
           </TabsList>
 
           {/* Map Tab */}
@@ -238,7 +238,7 @@ export default function Dashboard() {
               </div>
               <div className="mt-4 p-4 bg-black border-t border-border">
                 <p className="text-xs error-code">
-                  [MAP] {clusters.length} cluster(s) detected | {hazardsQuery.data?.length || 0} hazard(s)
+                  {clusters.length} map cluster(s) · {hazardsQuery.data?.length || 0} reported hazard(s)
                 </p>
               </div>
             </Card>
@@ -287,7 +287,7 @@ export default function Dashboard() {
                     onClick={() => setFilterSeverity(3)}
                     className="text-xs severity-dangerous"
                   >
-                    DANGEROUS
+                    HIGH
                   </Button>
                   <Button
                     variant={filterSeverity === 2 ? "default" : "outline"}
@@ -301,7 +301,7 @@ export default function Dashboard() {
                     onClick={() => setFilterSeverity(1)}
                     className="text-xs severity-mild"
                   >
-                    MILD
+                    LOW
                   </Button>
                 </div>
               </div>
@@ -347,7 +347,7 @@ export default function Dashboard() {
           {/* Recent Tab */}
           <TabsContent value="recent" className="mt-6">
             <Card className="bg-card border-border p-4 bracket-top">
-              <p className="text-xs error-code mb-4">RECENT_DETECTIONS</p>
+              <p className="text-xs error-code mb-4">RECENT REPORTS</p>
               <div className="space-y-3">
                 {recentHazards.length > 0 ? (
                   recentHazards.map((hazard) => (
@@ -355,7 +355,7 @@ export default function Dashboard() {
                       key={hazard.id}
                       className="p-3 bg-black border border-border flex items-center gap-4"
                     >
-                      <Clock className="w-4 h-4" style={{ color: "#00ffff" }} />
+                      <Clock className="w-4 h-4" style={{ color: "#c7f36a" }} />
                       <div className="flex-1">
                         <p className="text-sm font-bold">
                           {hazard.type.toUpperCase()} at {new Date(hazard.timestamp).toLocaleTimeString()}

@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./roadsense-ui.css";
 
 /* Settings screen shared by Android phones and vehicle displays. */
-.settings-shell { min-height: 100vh; color: #edf3ef; background: #0b1111; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.settings-shell { min-height: 0; color: #eef4f2; background: transparent; font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 .settings-topbar { min-height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 max(18px, calc((100vw - 900px) / 2)); border-bottom: 1px solid #263331; background: #0d1413; }
 .settings-back, .settings-brand { display: inline-flex; align-items: center; gap: 9px; color: #c7d1cb; text-decoration: none; font-size: 13px; font-weight: 600; }
 .settings-back { min-height: 44px; }
@@ -281,74 +283,74 @@ html.vehicle-display-mode .h-96 { height: min(58vh, 620px); }
 }
 
 :root {
-  --primary: #9bd5af;
-  --primary-foreground: #102016;
-  --sidebar-primary: #9bd5af;
-  --sidebar-primary-foreground: #102016;
-  --chart-1: #8ecda3;
-  --chart-2: #dbb968;
-  --chart-3: #dc8a7e;
+  --primary: #c7f36a;
+  --primary-foreground: #111a15;
+  --sidebar-primary: #c7f36a;
+  --sidebar-primary-foreground: #111a15;
+  --chart-1: #c7f36a;
+  --chart-2: #ffb84f;
+  --chart-3: #ff7777;
   --chart-4: #8eb8cf;
   --chart-5: #b5a0ce;
   --radius: .75rem;
-  --background: #0e1412;
-  --foreground: #e8eee9;
-  --card: #151d1a;
-  --card-foreground: #e8eee9;
-  --popover: #18211d;
-  --popover-foreground: #e8eee9;
-  --secondary: #202a25;
-  --secondary-foreground: #dce6df;
-  --muted: #202a25;
-  --muted-foreground: #9aa9a0;
-  --accent: #9bd5af;
-  --accent-foreground: #102016;
-  --destructive: #d98276;
+  --background: #07111f;
+  --foreground: #eef4f2;
+  --card: #101e2e;
+  --card-foreground: #eef4f2;
+  --popover: #122236;
+  --popover-foreground: #eef4f2;
+  --secondary: #17283a;
+  --secondary-foreground: #dce5e2;
+  --muted: #162536;
+  --muted-foreground: #9caab7;
+  --accent: #c7f36a;
+  --accent-foreground: #111a15;
+  --destructive: #ff7777;
   --destructive-foreground: #1a0f0e;
-  --border: #2b3932;
-  --input: #18211d;
-  --ring: #9bd5af;
-  --sidebar: #101714;
-  --sidebar-foreground: #e8eee9;
-  --sidebar-accent: #25362d;
+  --border: #2b3b4c;
+  --input: #101e2e;
+  --ring: #c7f36a;
+  --sidebar: #0c1928;
+  --sidebar-foreground: #eef4f2;
+  --sidebar-accent: #203329;
   --sidebar-accent-foreground: #d7e9dc;
-  --sidebar-border: #2b3932;
-  --sidebar-ring: #9bd5af;
+  --sidebar-border: #2b3b4c;
+  --sidebar-ring: #c7f36a;
 }
 
 .dark {
-  --primary: #9bd5af;
-  --primary-foreground: #102016;
-  --sidebar-primary: #9bd5af;
-  --sidebar-primary-foreground: #102016;
-  --background: #0e1412;
-  --foreground: #e8eee9;
-  --card: #151d1a;
-  --card-foreground: #e8eee9;
-  --popover: #18211d;
-  --popover-foreground: #e8eee9;
-  --secondary: #202a25;
-  --secondary-foreground: #dce6df;
-  --muted: #202a25;
-  --muted-foreground: #9aa9a0;
-  --accent: #9bd5af;
-  --accent-foreground: #102016;
-  --destructive: #d98276;
+  --primary: #c7f36a;
+  --primary-foreground: #111a15;
+  --sidebar-primary: #c7f36a;
+  --sidebar-primary-foreground: #111a15;
+  --background: #07111f;
+  --foreground: #eef4f2;
+  --card: #101e2e;
+  --card-foreground: #eef4f2;
+  --popover: #122236;
+  --popover-foreground: #eef4f2;
+  --secondary: #17283a;
+  --secondary-foreground: #dce5e2;
+  --muted: #162536;
+  --muted-foreground: #9caab7;
+  --accent: #c7f36a;
+  --accent-foreground: #111a15;
+  --destructive: #ff7777;
   --destructive-foreground: #1a0f0e;
-  --border: #2b3932;
-  --input: #18211d;
-  --ring: #9bd5af;
-  --chart-1: #8ecda3;
-  --chart-2: #dbb968;
-  --chart-3: #dc8a7e;
+  --border: #2b3b4c;
+  --input: #101e2e;
+  --ring: #c7f36a;
+  --chart-1: #c7f36a;
+  --chart-2: #ffb84f;
+  --chart-3: #ff7777;
   --chart-4: #8eb8cf;
   --chart-5: #b5a0ce;
-  --sidebar: #101714;
-  --sidebar-foreground: #e8eee9;
-  --sidebar-accent: #25362d;
+  --sidebar: #0c1928;
+  --sidebar-foreground: #eef4f2;
+  --sidebar-accent: #203329;
   --sidebar-accent-foreground: #d7e9dc;
-  --sidebar-border: #2b3932;
-  --sidebar-ring: #9bd5af;
+  --sidebar-border: #2b3b4c;
+  --sidebar-ring: #c7f36a;
 }
 
 @layer base {

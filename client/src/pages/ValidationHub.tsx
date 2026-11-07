@@ -88,15 +88,15 @@ export default function ValidationHub() {
   };
 
   const getSeverityColor = (severity: number) => {
-    if (severity === 3) return "text-red-400 border-red-500";
-    if (severity === 2) return "text-yellow-400 border-yellow-500";
-    return "text-green-400 border-green-500";
+    if (severity === 3) return "text-red-300 border-red-500";
+    if (severity === 2) return "text-amber-300 border-amber-500";
+    return "text-lime-300 border-lime-500";
   };
 
   const getSeverityLabel = (severity: number) => {
-    if (severity === 3) return "DANGEROUS";
+    if (severity === 3) return "HIGH";
     if (severity === 2) return "MODERATE";
-    return "MILD";
+    return "LOW";
   };
 
   const getAccuracyScore = (confirmed: number, fixed: number) => {
@@ -114,7 +114,7 @@ export default function ValidationHub() {
             <span className="error-code">COMMUNITY VALIDATION</span>
           </h1>
           <p className="text-sm error-code">
-            [SYSTEM] Confirm hazards or report fixes | Build community trust
+            Confirm hazards or report fixes to help build trust in community road data.
           </p>
         </div>
       </div>
@@ -123,11 +123,11 @@ export default function ValidationHub() {
       <div className="container py-8">
         {loading ? (
           <Card className="bg-card border-border p-6 text-center">
-            <p className="text-sm error-code">LOADING_HAZARDS</p>
+            <p className="text-sm error-code">Loading road reports…</p>
           </Card>
         ) : hazards.length === 0 ? (
           <Card className="bg-card border-border p-6 text-center">
-            <p className="text-sm error-code">NO_HAZARDS_FOUND</p>
+            <p className="text-sm error-code">No reports found</p>
             <p className="text-muted-foreground mt-2">No hazards to validate</p>
           </Card>
         ) : (

@@ -191,15 +191,15 @@ export default function AlertsDashboard() {
   };
 
   const getSeverityColor = (severity: number) => {
-    if (severity === 3) return "text-red-400 border-red-500 bg-red-950";
-    if (severity === 2) return "text-yellow-400 border-yellow-500 bg-yellow-950";
-    return "text-green-400 border-green-500 bg-green-950";
+    if (severity === 3) return "text-red-300 border-red-500 bg-red-950/20";
+    if (severity === 2) return "text-amber-300 border-amber-500 bg-amber-950/20";
+    return "text-lime-300 border-lime-500 bg-lime-950/20";
   };
 
   const getSeverityLabel = (severity: number) => {
-    if (severity === 3) return "DANGEROUS";
+    if (severity === 3) return "HIGH";
     if (severity === 2) return "MODERATE";
-    return "MILD";
+    return "LOW";
   };
 
   const severityCounts = {
@@ -227,7 +227,7 @@ export default function AlertsDashboard() {
             </div>
           </div>
           <p className="text-sm error-code">
-            [SYSTEM] Live hazard stream | SSE real-time push notifications
+            Live hazard stream · Real-time report notifications
           </p>
         </div>
       </div>
@@ -274,22 +274,22 @@ export default function AlertsDashboard() {
 
       {/* Stats Panel */}
       <div className="container py-6 border-b border-border">
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="bg-black border border-border p-4 text-center">
-            <p className="text-xs error-code mb-2">TOTAL_ALERTS</p>
-            <p className="text-3xl font-bold text-cyan-400">{alerts.length}</p>
+            <p className="text-xs error-code mb-2">TOTAL ALERTS</p>
+            <p className="text-3xl font-bold text-lime-300">{alerts.length}</p>
           </Card>
           <Card className="bg-black border border-red-500 p-4 text-center">
-            <p className="text-xs text-red-400 mb-2">DANGEROUS</p>
-            <p className="text-3xl font-bold text-red-400">{severityCounts.dangerous}</p>
+            <p className="text-xs text-red-300 mb-2">HIGH</p>
+            <p className="text-3xl font-bold text-red-300">{severityCounts.dangerous}</p>
           </Card>
           <Card className="bg-black border border-yellow-500 p-4 text-center">
-            <p className="text-xs text-yellow-400 mb-2">MODERATE</p>
-            <p className="text-3xl font-bold text-yellow-400">{severityCounts.moderate}</p>
+            <p className="text-xs text-amber-300 mb-2">MODERATE</p>
+            <p className="text-3xl font-bold text-amber-300">{severityCounts.moderate}</p>
           </Card>
           <Card className="bg-black border border-green-500 p-4 text-center">
-            <p className="text-xs text-green-400 mb-2">MILD</p>
-            <p className="text-3xl font-bold text-green-400">{severityCounts.mild}</p>
+            <p className="text-xs text-lime-300 mb-2">LOW</p>
+            <p className="text-3xl font-bold text-lime-300">{severityCounts.mild}</p>
           </Card>
         </div>
       </div>
@@ -301,7 +301,7 @@ export default function AlertsDashboard() {
             <Bell className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
             <p className="text-lg font-bold mb-2">No alerts yet</p>
             <p className="text-sm text-muted-foreground">
-              Waiting for hazard reports from the sensor network...
+              Waiting for submitted RoadSense reports...
             </p>
           </Card>
         ) : (
